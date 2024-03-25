@@ -17,7 +17,7 @@ node{
 	    def mvnHome =  tool name: 'maven3', type: 'maven'
 	   configFileProvider([configFile(fileId: '380de3c3-d7db-42fd-be43-28a2128ba01d', variable: 'mavensettings')]) {
                   
-                  sh "${mvnHome}/bin/mvn -s $mavensettings clean deploy -DskipTests=true"
+                  sh "${mvnHome}/bin/mvn -s $mavensettings  deploy -DskipTests=true"
                   
                 }
    }
