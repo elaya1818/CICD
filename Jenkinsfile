@@ -49,7 +49,7 @@ node{
  post {
         always {
             emailext{
-subject: "project status",
+subject: "project status: $(currentBuild.status)",
 body: your project succesfully deployed",
 to:"elavarasan06041999@gmail.com",
 from:"jenkins@example.com",
