@@ -48,7 +48,14 @@ node{
 }
  post {
         always {
-            emailext body: 'A Test EMail', recipientProviders: [[$class: 'DevelopersRecipientProvider'], [$class: 'RequesterRecipientProvider']], subject: 'Test'
+            emailext{
+subject: "project status",
+body: your project succesfully deployed",
+to:"elavarasan06041999@gmail.com",
+from:"jenkins@example.com",
+replyTo:"jenkins@example.com"
+}
+
         }
     }
 	
