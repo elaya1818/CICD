@@ -38,6 +38,5 @@ node{
    sh 'docker run -d -p 8090:8080 --name tomcattest elavarasan018/myweb:0.0.2' 
    }
 }
-
-    
+}	
     
