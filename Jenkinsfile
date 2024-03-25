@@ -46,24 +46,9 @@ node{
    sh 'docker run -d -p 8090:8080 --name tomcattest elavarasan018/myweb:0.0.2' 
    }
 }
-	 post {
-            always {
-                emailext (
-                    subject: "Pipeline Status: ${BUILD_NUMBER}",
-                    body: '''<html>
-                                <body>
-                                    <p>Build Status: ${BUILD_STATUS}</p>
-                                    <p>Build Number: ${BUILD_NUMBER}</p>
-                                    <p>Check the <a href="${BUILD_URL}">console output</a>.</p>
-                                </body>
-                            </html>''',
-                    to: 'elavarasan06041999@gmail.com@gmail.com',
-                    from: 'jenkins@example.com',
-                    replyTo: 'jenkins@example.com',
-                    mimeType: 'text/html'
-                )
-            }
-        }
+	stage('email notification'){
+	emailext attachLog: true, body: 'pfa, this is the status of build', subject: 'build status', to: 'elavarasan06041999@gmail.com'
+	}
 
 	
 }	
