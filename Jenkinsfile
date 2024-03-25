@@ -13,6 +13,13 @@ node{
 	          sh "${mvnHome}/bin/mvn sonar:sonar"
 	        }
 	    }
+   stage('nexus'){
+	   configFileProvider([configFile(fileId: '380de3c3-d7db-42fd-be43-28a2128ba01d', variable: 'mavensettings')]) {
+                  
+                  sh "mvn -s $mavensettings clean deploy -DskipTests=true"
+                  
+                }
+   }
     stage('DOCKER IMAGE BUILD'){
    sh 'docker build -t elavarasan018/myweb:0.0.2 .'
    }
