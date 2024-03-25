@@ -1,12 +1,18 @@
 node{
    stage('SCM CHECKOUT'){
-     git 'https://github.com/elaya1818/my-app.git'
+     git 'https://github.com/elaya1818/CICD.git'
    }
      stage('BUILD-MAVEN'){
       def mvnHome =  tool name: 'maven3', type: 'maven'   
       sh "${mvnHome}/bin/mvn clean package"
 	  sh 'mv target/myweb*.war target/newapp.war'
    }
+   stage('SONARQUBE ANALYSIS') {
+	        def mvnHome =  tool name: 'maven3', type: 'maven'
+	        withSonarQubeEnv('sonar') { 
+	          sh "${mvnHome}/bin/mvn sonar:sonar"
+	        }
+	    }
     stage('DOCKER IMAGE BUILD'){
    sh 'docker build -t elavarasan018/myweb:0.0.2 .'
    }
@@ -35,4 +41,3 @@ node{
 
     
     
-}
