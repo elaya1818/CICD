@@ -46,18 +46,12 @@ node{
    sh 'docker run -d -p 8090:8080 --name tomcattest elavarasan018/myweb:0.0.2' 
    }
 }
- post {
-        always {
-            emailext{
-subject: "project status: $(currentBuild.status)",
-body: your project succesfully deployed",
-to:"elavarasan06041999@gmail.com",
-from:"jenkins@example.com",
-replyTo:"jenkins@example.com"
-}
+	 stage('Email Notification'){
+      mail bcc: '', body: '''Hi Welcome to jenkins email alerts
+      Thanks
+      Hari''', cc: '', from: '', replyTo: '', subject: 'Jenkins Job', to: 'elavarasan06041999@gmail.com'
+   }
 
-        }
-    }
 	
 }	
     
