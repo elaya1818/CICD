@@ -13,7 +13,7 @@ public class CalculatorTest extends TestCase {
 	Calculator cal = new Calculator();
 
 	public void testAdd() {
-		Assert.assertEquals(cal.multiply(10, 20), 30);
+		Assert.assertEquals(cal.add(10, 20), 30);
 		Properties prop = new Properties();
 		
 		OutputStream output = null;
