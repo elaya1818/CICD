@@ -47,7 +47,7 @@ node{
    }
 }
 	stage('email notification'){
-	emailext (attachLog: true, body: 'pfa, This is the status of your cicd project pipeline', subject: 'CiCd *pipeline status', to: 'elavarasan06041999@gmail.com')
+	emailext (attachLog: true, body: 'pfa, This is the status of your cicd project pipeline', subject: 'CiCd Pipeline Status', to: 'elavarasan06041999@gmail.com')
 	}
 
 	
