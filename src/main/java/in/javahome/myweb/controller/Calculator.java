@@ -9,7 +9,7 @@ public class Calculator {
 	 * @return int
 	 */
 	public int add(int i, int j){
-		String s = null;
+		String s = "elava";
 		s.toString();
 		return i+j;
 	}
