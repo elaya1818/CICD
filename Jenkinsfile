@@ -13,7 +13,7 @@ node{
 	          sh "${mvnHome}/bin/mvn sonar:sonar"
 	        }
 	    }
-   stage('nexus'){
+	     stage('nexus'){
 	    def mvnHome =  tool name: 'maven3', type: 'maven'
 	   configFileProvider([configFile(fileId: '0b1f18c7-fee5-4672-acc9-deacb56e839b', variable: 'mavensettings')]) {
                   
@@ -35,7 +35,7 @@ node{
 stage('NEXUS ARTIFACTORY'){
    sh "docker login -u admin -p admin123 13.201.59.35:8083"
    sh "docker tag elavarasan018/myweb:0.0.2 13.201.59.35:8083/elava:1.0.0"
-   sh 'docker push 13.201.59.35:8083/vivek:1.0.0'
+   sh 'docker push 13.201.59.35:8083/elava:1.0.0'
    }
 
   stage('REMOVE PREVIOUS CONTAINER'){
@@ -47,11 +47,11 @@ stage('NEXUS ARTIFACTORY'){
    stage('DOCKER DEPLOYMENT'){
    sh 'docker run -d -p 8090:8080 --name tomcattest elavarasan018/myweb:0.0.2' 
    }
-}
-	stage('email notification'){
+   }
+
+stage('email notification'){
 	emailext (attachLog: true, body: 'pfa, This is the status of your cicd project pipeline', subject: 'CiCd Pipeline Status', to: 'elavarasan06041999@gmail.com')
 	}
-
 	
-}	
-    
+}	    
+	    
