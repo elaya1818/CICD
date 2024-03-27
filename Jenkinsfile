@@ -15,7 +15,7 @@ node{
 	    }
    stage('nexus'){
 	    def mvnHome =  tool name: 'maven3', type: 'maven'
-	   configFileProvider([configFile(fileId: '380de3c3-d7db-42fd-be43-28a2128ba01d', variable: 'mavensettings')]) {
+	   configFileProvider([configFile(fileId: '0b1f18c7-fee5-4672-acc9-deacb56e839b', variable: 'mavensettings')]) {
                   
                   sh "${mvnHome}/bin/mvn -s $mavensettings  deploy -DskipTests=true"
                   
@@ -31,11 +31,13 @@ node{
    sh 'docker push elavarasan018/myweb:0.0.2'
    }
    
-   stage('NEXUS ARTIFACTORY'){
-   sh "docker login -u admin -p admin123 13.200.229.48:8083"
-   sh "docker tag elavarasan018/myweb:0.0.2 13.200.229.48:8083/docker-private:1.0.0"
-   sh 'docker push 13.200.229.48:8083/docker-private:1.0.0'
+   
+stage('NEXUS ARTIFACTORY'){
+   sh "docker login -u admin -p admin123 13.201.59.35:8083"
+   sh "docker tag elavarasan018/myweb:0.0.2 13.201.59.35:8083/elava:1.0.0"
+   sh 'docker push 13.201.59.35:8083/vivek:1.0.0'
    }
+
   stage('REMOVE PREVIOUS CONTAINER'){
 	try{
 		sh 'docker rm -f tomcattest'
