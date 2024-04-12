@@ -1,0 +1,156 @@
+======================
+DEVOPS PROJECT SESSION 
+======================
+
+Vivek
+7200092796
+
+EC2-1 (t2.medium)
+
+GITHUB : https://github.com/VM2322/my-app
+
+1. Install Jenkins, GIT, Maven & Docker
+  -> amazon-linux-extras install epel -y (extra packages for enterprise linux)
+  -> sudo yum update -y
+  -> REFER -- JENKINS -- LINUX INSTALLATION
+  -> amazon-linux-extras install java-openjdk11 -y
+  -> yum install jenkins (Enable & Start)
+  -> yum install git -y
+  -> yum install docker (sudo systemctl start docker & status)
+  -> Install maven on /opt by using below link (Maven Integration Plugin)
+	- https://mirrors.estointernet.in/apache/maven/maven-3/3.8.5/binaries/apache-maven-3.8.5-bin.tar.gz
+	- Under Tools - Add Maven - Home Directory
+
+DOCKER COMMANDS:
+
+1. docker build -t ImageName:TagName
+docker build -t vm2322/myweb:0.0.2 
+
+2. docker push <your_dockerhub_username>/<repository_name>:<tag>
+docker push vm2322/myweb:0.0.2
+
+3. docker login
+docker login -u vm2322 -p ${dockerPassword}
+
+EC2-2 (t2.medium)
+
+2. SonarQube
+   SONAR CUBE INSTALLATION
+
+FOLLOW AS BELOW
+
+- amazon-linux-extras install epel -y
+- amazon-linux-extras install java-openjdk11 -y
+- yum install mysql -y
+- Create RDS Instances with Free Tier options (enable Security Group with Port# 3306)
+- https://binaries.sonarsource.com/Distribution/sonarqube/sonarqube-6.7.6.zip
+- unzip <sonar-qube-file>
+- Under Conf - vi sonar.properties
+	- Under Database - Sonar-JDBC Username & Password
+	- Under MYSQL options - Instead of Localhost - Add MYSQL Endpoint
+	- Navigate to Webserver Options - Uncomment CIDR - 0.0.0.0
+	- Then add Context root = /sonar
+	- Enable Sonar Port Number - 9000
+- sudo update-alternatives --config java
+- Add this [Output from this command - sudo update-alternatives --config java ] to Wrapper Config file instead of JAVA
+- Navigate to /opt/
+- chown -R ec2-user:ec2-user sonarqube-6.7.6
+mysql -h  database.czg8eususim4.ap-south-1.rds.amazonaws.com -P 3306 -u admin -p
+
+-- mySql Commands:
+	- CREATE DATABASE sonar CHARACTER SET utf8 COLLATE utf8_general_ci;
+	- CREATE USER sonar@localhost IDENTIFIED BY 'sonar';
+	- CREATE USER sonar@'%' IDENTIFIED BY 'sonar';
+	- GRANT ALL ON sonar.* TO sonar@localhost;
+	- GRANT ALL ON sonar.* TO sonar@'%';
+
+- Exit from Root User (Use CTRL + d) 
+- Start SonarCube Process
+
+[Start as ec2-user with permission changes - Dont start as ROOT user]
+
+
+or you can start sonar frm docker also
+
+sudo yum install docker -y
+sudo systemctl start docker
+docker run -itd --name sonar -p 9000:9000 sonarqube:lts-community
+ you can connect sonar thr http://pub ip:9000
+
+
+
+
+EC2-3 (t2.medium)
+3. Nexus
+   -> yum install java-1.8.0 -y
+   -> wget https://download.sonatype.com/nexus/3/nexus-3.43.0-01-unix.tar.gz
+   -> create docker private repo with port
+   -> login to docker machine and edit daemon.json file
+
+{
+  "insecure-registries": [
+    "13.201.59.35:8083"
+  ]
+}
+
+
+
+stage('NEXUS ARTIFACTORY'){
+   sh "docker login -u admin -p admin123 13.201.59.35:8083"
+   sh "docker tag elavarasan018/myweb:0.0.2 13.201.59.35:8083/elava:1.0.0"
+   sh 'docker push 13.201.59.35:8083/vivek:1.0.0'
+   }
+
+
+13.200.229.48:8083/docker-private/elava:1.0.0
+{
+ "auths":{
+  "13.200.229.48:8083":{
+        "auth": "BASE64_ENCODED_USERNAME_PASSWORD"
+  }
+ }
+}
+
+
+
+Webhook:
+http://<jenkins_server>:8080/github-webhook/
+
+sfak hrje ymyk tupr
+
+Output:
+<Jenkins_server>:8090/newapp   
+
+Overall Stages:
+
+1. Stage1 SCM Check-Out
+2. Stage2 Maven-Build
+3. Stage3 SonarQube Analysis
+4. Stage4 Build Docker Image
+5. Stage5 Push Docker Image to DockerHub
+6. Remove Old Container bfr deploying in to VM
+7. Stage6 Store Docker images in Nexus Private Registery
+8. Stage7 Deploy the docker image on VM
+
+
+
+post {
+always{
+ junit '**/target/surefire-reports/Test-*.xml
+}
+}
+
+
+
+
+
+script {
+                    def testResult = currentBuild.testResultAction?.result
+                    if (testResult == 'SUCCESS') {
+                        echo "Tests passed! Proceeding to the next build steps."
+                        // Add your next build steps here
+                    } else {
+                        echo "Tests failed! Halting the build."
+                        currentBuild.result = 'FAILURE'
+                    }
+                }
