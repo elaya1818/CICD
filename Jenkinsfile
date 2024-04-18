@@ -13,6 +13,14 @@ node{
 	          sh "${mvnHome}/bin/mvn sonar:sonar"
 	        }
 	    }
+	stage('sonar quality gates')
+	{
+		timeout(time: 1, unit: 'HOURS'){
+		def qq=waitforQualityGate()
+		if(qq.status != 'OK')
+			error="pipeline broken due to : $(qq.status)"
+		}	
+	}
 	     stage('nexus'){
 	    def mvnHome =  tool name: 'maven3', type: 'maven'
 	   configFileProvider([configFile(fileId: '0b1f18c7-fee5-4672-acc9-deacb56e839b', variable: 'mavensettings')]) {
